@@ -45,9 +45,7 @@ def setup_package():
             "Programming Language :: Python",
             "Programming Language :: Python :: 3",
         ],
-        install_requires=[
-            "pygit2",
-        ],
+        install_requires=["pygit2", "semver"],
         python_requires=">=3.7",
     )
 
