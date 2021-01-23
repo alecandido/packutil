@@ -73,11 +73,14 @@ def test_version(repo_path, version_module):
     assert version_module.version == version_module.full_version.split("-")[0]
 
 
+main_branch = ["master", "main", "trunk"]
+
+
 def test_released(repo_path, version_module):
     repo = pygit2.Repository(repo_path)
 
     # define release detectors
-    release_branches = ["master", "release", "hotfix"]
+    release_branches = main_branch + ["release", "hotfix"]
 
     def is_tag_branch(branch_name):
         if branch_name[0] != "v":
