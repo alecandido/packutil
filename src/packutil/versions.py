@@ -1,28 +1,7 @@
 import pygit2
 import semver
 
-main_branch = ["master", "main", "trunk"]
-# define release detectors
-release_branches = main_branch + ["release", "hotfix"]
-
-
-def ref_name(ref):
-    return "/".join(ref.split("/")[2:])
-
-
-def get_tags(repo):
-    return ["/".join(r.split("/")[2:]) for r in repo.references if "/tags/" in r]
-
-
-def is_tag_branch(branch_name, prefix="v"):
-    if branch_name[0 : len(prefix)] != prefix:
-        return False
-
-    try:
-        semver.VersionInfo.parse(branch_name[len(prefix) :])
-        return True
-    except ValueError:
-        return False
+from . import git
 
 
 def mkversion(major, minor, micro):
@@ -33,9 +12,10 @@ def is_released(repo_path):
     repo = pygit2.Repository(repo_path)
 
     # determine ids of tagged commits
-    tags_commit_sha = [repo.resolve_refish(tag)[0].id for tag in get_tags(repo)]
+    tags_commit_sha = [repo.resolve_refish(tag)[0].id for tag in git.get_tags(repo)]
     return (
-        ref_name(repo.head.name) in main_branch or repo.head.target in tags_commit_sha
+        git.ref_name(repo.head.name) in git.main_branch
+        or repo.head.target in tags_commit_sha
     )
 
 
@@ -74,7 +54,7 @@ is_released = %(isreleased)s
 def test_version(repo_path, version_module):
     repo = pygit2.Repository(repo_path)
 
-    tags = get_tags(repo)
+    tags = git.get_tags(repo)
 
     versions = []
     for tag in tags:
@@ -95,11 +75,11 @@ def test_released(repo_path, version_module):
     repo = pygit2.Repository(repo_path)
 
     # get repo info
-    branch_name = ref_name(repo.head.name)
+    branch = git.ref_name(repo.head.name)
     full_version = semver.VersionInfo.parse(version_module.full_version)
 
     # perform checks
-    if branch_name.split("/")[0] in release_branches or is_tag_branch(branch_name):
+    if branch.category in git.release_branches or git.is_tag_branch(branch):
         assert version_module.is_released
         assert full_version.prerelease is None
     else:
