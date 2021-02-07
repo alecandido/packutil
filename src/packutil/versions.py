@@ -26,6 +26,8 @@ short_version = '%(short_version)s'
 version = '%(version)s'
 full_version = '%(full_version)s'
 is_released = %(isreleased)s
+
+__version__ = version
 """
     version = mkversion(major, minor, micro)
     fullversion = version
