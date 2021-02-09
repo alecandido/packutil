@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 MAJOR = 0
 MINOR = 0
-MICRO = 2
+MICRO = 3
 repo_path = pathlib.Path(__file__).absolute().parent
 
 # import packutil as pack
