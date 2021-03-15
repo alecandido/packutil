@@ -1,4 +1,5 @@
 from . import versions
+from . import path
 
 try:
     from . import version
